@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+</head>
+<body>
+    <button onclick="DoStuff()">Get</button>
+    <br>
+    <input type="text" id = "name" placeholder="Name">
+    <input type="text" id = "description" placeholder="Description">
+    <input type="number" id = "price" placeholder="Price $">
+    <button onclick="AddStuff()">Post</button>
+
+    <ul id = "productlist">
+
+    </ul>
+</body>
+<script>
+    const DoStuff = async () =>{
+        const response = await fetch("http://localhost:3000/")
+        const data = await response.json();
+        let htmladd = ""
+        data.map((product,index)=>{
+            htmladd+=`<li>
+                Product: ${product.name}
+                Description: ${product.description}
+                Price: ${product.price}
+                <br>
+            </li>
+            `
+        })
+
+        if(htmladd !== ""){
+            productlist.innerHTML = htmladd
+        }
+    }
+
+    const AddStuff = async () =>{
+
+        const name = document.getElementById("name").value
+        const description = document.getElementById("description").value
+        const price = document.getElementById("price").value
+
+        if(!name || !description || !price) return alert("One of the arguments is missing!")
+
+        const data = {name:name,description:description,price:price}
+        const response = await fetch("http://localhost:3000/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        const result = await response.json();
+        console.log("Success:", result);
+    }
+</script>
+</html>
